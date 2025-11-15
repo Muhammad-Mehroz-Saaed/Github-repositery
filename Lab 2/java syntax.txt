@@ -1,0 +1,26 @@
+// Package declaration (optional, only if you are organizing files in a package)
+package mypackage;
+
+// Import statements (before class definition)
+import java.util.Scanner;
+
+public class MyProgram {
+    public static void main(String[] args) {
+        
+        // Create Scanner object to take input from user
+        Scanner sc = new Scanner(System.in);
+
+        // Example: Take input from user
+        System.out.print("Enter your name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter your age: ");
+        int age = sc.nextInt();
+
+        // Output
+        System.out.println("Hello, " + name + "! You are " + age + " years old.");
+
+        // Always close the scanner
+        sc.close();
+    }
+}
