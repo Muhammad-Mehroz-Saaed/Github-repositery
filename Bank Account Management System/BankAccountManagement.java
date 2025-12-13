@@ -980,6 +980,152 @@ static void userHelp() {
     System.out.println("\n  For technical support, contact the administrator.");
     System.out.println("═══════════════════════════════════════════════════════════════");
 }
+static void showHelp() {
+    System.out.println("\n╔═══════════════════════════════════════════════════════════════╗");
+    System.out.println("║              BANK SYSTEM HELP & INSTRUCTIONS                  ║");
+    System.out.println("╚═══════════════════════════════════════════════════════════════╝");
+    System.out.println("\n  GETTING STARTED");
+    System.out.println("  ───────────────");
+    System.out.println("  This is a Bank Account Management System that allows you to");
+    System.out.println("  manage bank accounts, perform transactions, and generate reports.");
+    System.out.println("\n  FOR ADMINISTRATORS");
+    System.out.println("  ──────────────────");
+    System.out.println("  - Default admin password: admin123");
+    System.out.println("  - Create and manage user accounts");
+    System.out.println("  - View system reports and logs");
+    System.out.println("  - Control account security");
+    System.out.println("\n  FOR USERS");
+    System.out.println("  ─────────");
+    System.out.println("  - Login with your account number and password");
+    System.out.println("  - Perform deposits, withdrawals, and transfers");
+    System.out.println("  - View transaction history");
+    System.out.println("  - Manage security settings");
+    System.out.println("\n  SECURITY FEATURES");
+    System.out.println("  ─────────────────");
+    System.out.println("  - Password protection for all accounts");
+    System.out.println("  - Account locking mechanism");
+    System.out.println("  - Login attempt tracking");
+    System.out.println("  - Transaction logging");
+    System.out.println("\n  IMPORTANT NOTES");
+    System.out.println("  ───────────────");
+    System.out.println("  - All data is stored in text files");
+    System.out.println("  - Keep your password secure");
+    System.out.println("  - Contact admin if your account is locked");
+    System.out.println("═══════════════════════════════════════════════════════════════");
+}
+
+static void showAbout() {
+    System.out.println("\n╔═══════════════════════════════════════════════════════════════╗");
+    System.out.println("║                    ABOUT THIS PROJECT                         ║");
+    System.out.println("╚═══════════════════════════════════════════════════════════════╝");
+    System.out.println("\n  PROJECT TITLE");
+    System.out.println("  ─────────────");
+    System.out.println("  Bank Account Management System");
+    System.out.println("\n  DESCRIPTION");
+    System.out.println("  ───────────");
+    System.out.println("  A comprehensive banking system that provides secure account");
+    System.out.println("  management, transaction processing, and administrative control.");
+    System.out.println("\n  FEATURES");
+    System.out.println("  ────────");
+    System.out.println("  ✓ User account management");
+    System.out.println("  ✓ Secure login system");
+    System.out.println("  ✓ Deposit, withdrawal, and transfer operations");
+    System.out.println("  ✓ Transaction history tracking");
+    System.out.println("  ✓ Administrative control panel");
+    System.out.println("  ✓ System reports and statistics");
+    System.out.println("  ✓ Security features (account locking, login tracking)");
+    System.out.println("\n  TECHNOLOGY");
+    System.out.println("  ──────────");
+    System.out.println("  Language: Java");
+    System.out.println("  Storage: Text file based");
+    System.out.println("  Interface: Console-based");
+    System.out.println("\n  DEVELOPED BY");
+    System.out.println("  ────────────");
+    System.out.println("  Computer Science Students");
+    System.out.println("  First Semester Project");
+    System.out.println("\n  VERSION");
+    System.out.println("  ───────");
+    System.out.println("  1.0.0");
+    System.out.println("═══════════════════════════════════════════════════════════════");
+}
+
+static int findAccount(String accNum) {
+    for (int i = 0; i < accountCount; i++) {
+        if (accountNumbers[i].equals(accNum) && !isDeleted[i]) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static void loadAccounts() {
+    try {
+        File f = new File("accounts.txt");
+        if (!f.exists()) {
+            return;
+        }
+        
+        BufferedReader br = new BufferedReader(new FileReader(f));
+        String line;
+        accountCount = 0;
+        
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split("\\|");
+            if (parts.length == 6) {
+                accountNumbers[accountCount] = parts[0];
+                accountHolders[accountCount] = parts[1];
+                balances[accountCount] = Double.parseDouble(parts[2]);
+                passwords[accountCount] = parts[3];
+                isLocked[accountCount] = parts[4].equals("1");
+                isDeleted[accountCount] = parts[5].equals("1");
+                accountCount++;
+            }
+        }
+        br.close();
+    } catch (Exception e) {
+        System.out.println("⚠ Error loading accounts!");
+    }
+}
+
+static void saveAccounts() {
+    try {
+        FileWriter fw = new FileWriter("accounts.txt", false);
+        for (int i = 0; i < accountCount; i++) {
+            String locked = isLocked[i] ? "1" : "0";
+            String deleted = isDeleted[i] ? "1" : "0";
+            fw.write(accountNumbers[i] + "|" + accountHolders[i] + "|" + 
+                     balances[i] + "|" + passwords[i] + "|" + locked + "|" + deleted + "\n");
+        }
+        fw.close();
+    } catch (Exception e) {
+        System.out.println("⚠ Error saving accounts!");
+    }
+}
+
+static void writeLog(String message) {
+    try {
+        FileWriter fw = new FileWriter("system_log.txt", true);
+        String timestamp = java.time.LocalDateTime.now().toString();
+        fw.write("[" + timestamp + "] " + message + "\n");
+        fw.close();
+    } catch (Exception e) {
+        System.out.println("⚠ Error writing to log!");
+    }
+}
+
+static void writeTxn(String accNum, String type, double amount, double newBalance) {
+    try {
+        String filename = "TXN_" + accNum + ".txt";
+        FileWriter fw = new FileWriter(filename, true);
+        String timestamp = java.time.LocalDateTime.now().toString();
+        fw.write("[" + timestamp + "] " + type + " | Amount: $" + amount + 
+                 " | Balance: $" + newBalance + "\n");
+        fw.close();
+    } catch (Exception e) {
+        System.out.println("⚠ Error writing transaction!");
+    }
+}
+    }
 
 
 
