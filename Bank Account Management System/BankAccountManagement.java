@@ -215,5 +215,109 @@ while (true) {
         System.out.println("Account Holder: " + name);
         System.out.println("Initial Balance: $" + deposit);
             }
+    
+    static void updateName() {
+        System.out.print("\nEnter Account Number: ");
+        String accNum = sc.nextLine();
+        
+        int idx = findAccount(accNum);
+        if (idx == -1) {
+            System.out.println("⚠ Account not found!");
+            return;
+        }
+        
+        System.out.println("Current Name: " + accountHolders[idx]);
+        System.out.print("Enter New Name: ");
+        String newName = sc.nextLine();
+        
+        if (newName.trim().isEmpty()) {
+            System.out.println("⚠ Name cannot be empty!");
+            return;
+        }
+        
+        accountHolders[idx] = newName;
+        saveAccounts();
+        writeLog("Account name updated: " + accNum);
+        System.out.println("✓ Name updated successfully!");
+    }
+    
+    static void closeAccount() {
+        System.out.print("\nEnter Account Number to Close: ");
+        String accNum = sc.nextLine();
+        
+        int idx = findAccount(accNum);
+        if (idx == -1) {
+            System.out.println("⚠ Account not found!");
+            return;
+        }
+        
+        System.out.print("Are you sure? (yes/no): ");
+        String confirm = sc.nextLine();
+        
+        if (confirm.equalsIgnoreCase("yes")) {
+            isDeleted[idx] = true;
+            saveAccounts();
+            writeLog("Account closed (soft delete): " + accNum);
+            System.out.println("✓ Account closed successfully!");
+        } else {
+            System.out.println("Operation cancelled.");
+        }
+    }
+    
+    static void deleteAccount() {
+        System.out.print("\nEnter Account Number to Delete Permanently: ");
+        String accNum = sc.nextLine();
+        
+        int idx = findAccount(accNum);
+        if (idx == -1) {
+            System.out.println("⚠ Account not found!");
+            return;
+        }
+        
+        System.out.println("⚠ WARNING: This action cannot be undone!");
+        System.out.print("Type 'DELETE' to confirm: ");
+        String confirm = sc.nextLine();
+        
+        if (confirm.equals("DELETE")) {
+            for (int i = idx; i < accountCount - 1; i++) {
+                accountNumbers[i] = accountNumbers[i + 1];
+                accountHolders[i] = accountHolders[i + 1];
+                balances[i] = balances[i + 1];
+                passwords[i] = passwords[i + 1];
+                isLocked[i] = isLocked[i + 1];
+                isDeleted[i] = isDeleted[i + 1];
+            }
+            accountCount--;
+            saveAccounts();
+            writeLog("Account permanently deleted: " + accNum);
+            System.out.println("✓ Account deleted permanently!");
+        } else {
+            System.out.println("Operation cancelled.");
+        }
+    }
+    
+    static void viewAllAccounts() {
+        System.out.println("\n╔════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                          ALL ACCOUNTS OVERVIEW                             ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════════════════╝");
+        
+        if (accountCount == 0) {
+            System.out.println("\nNo accounts found in the system.");
+            return;
+        }
+        
+        System.out.println("\n──────────────────────────────────────────────────────────────────────────────");
+        System.out.printf("%-15s %-25s %-15s %-10s %-10s\n", "Account No", "Holder Name", "Balance", "Status", "Locked");
+        System.out.println("──────────────────────────────────────────────────────────────────────────────");
+        
+        for (int i = 0; i < accountCount; i++) {
+            String status = isDeleted[i] ? "CLOSED" : "ACTIVE";
+            String locked = isLocked[i] ? "YES" : "NO";
+            System.out.printf("%-15s %-25s $%-14.2f %-10s %-10s\n", 
+                accountNumbers[i], accountHolders[i], balances[i], status, locked);
+        }
+        System.out.println("──────────────────────────────────────────────────────────────────────────────");
+    }
+
 
 
