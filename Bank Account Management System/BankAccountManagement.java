@@ -318,6 +318,309 @@ while (true) {
         }
         System.out.println("──────────────────────────────────────────────────────────────────────────────");
     }
+static void searchAccounts() {
+        System.out.println("\n┌─────────────────────────────────┐");
+        System.out.println("│   SEARCH & VIEW ACCOUNTS        │");
+        System.out.println("└─────────────────────────────────┘");
+        System.out.println("  1. Search by Account Number");
+        System.out.println("  2. Search by Holder Name");
+        System.out.println("  3. View Full Account Details");
+        System.out.println("  4. Back");
+        System.out.print("\nChoice: ");
+        
+        String ch = sc.nextLine();
+        
+        if (ch.equals("1")) {
+            searchByNumber();
+        } else if (ch.equals("2")) {
+            searchByName();
+        } else if (ch.equals("3")) {
+            viewDetails();
+        } else if (ch.equals("4")) {
+            return;
+        } else {
+            System.out.println("⚠ Invalid choice!");
+        }
+    }
+    
+    static void searchByNumber() {
+        System.out.print("\nEnter Account Number: ");
+        String accNum = sc.nextLine();
+        
+        int idx = findAccount(accNum);
+        if (idx == -1) {
+            System.out.println("⚠ Account not found!");
+        } else {
+            displayAccount(idx);
+        }
+    }
+    
+    static void searchByName() {
+        System.out.print("\nEnter Name (partial match allowed): ");
+        String name = sc.nextLine().toLowerCase();
+        
+        boolean found = false;
+        for (int i = 0; i < accountCount; i++) {
+            if (accountHolders[i].toLowerCase().contains(name)) {
+                displayAccount(i);
+                found = true;
+            }
+        }
+        
+        if (!found) {
+            System.out.println("⚠ No accounts found matching that name!");
+        }
+    }
+    
+    static void viewDetails() {
+        System.out.print("\nEnter Account Number for Full Details: ");
+        String accNum = sc.nextLine();
+        
+        int idx = findAccount(accNum);
+        if (idx == -1) {
+            System.out.println("⚠ Account not found!");
+        } else {
+            System.out.println("\n╔══════════════════════════════════════════╗");
+            System.out.println("║       FULL ACCOUNT DETAILS               ║");
+            System.out.println("╚══════════════════════════════════════════╝");
+            System.out.println("\nAccount Number  : " + accountNumbers[idx]);
+            System.out.println("Account Holder  : " + accountHolders[idx]);
+            System.out.println("Current Balance : $" + balances[idx]);
+            System.out.println("Account Status  : " + (isDeleted[idx] ? "CLOSED" : "ACTIVE"));
+            System.out.println("Security Status : " + (isLocked[idx] ? "LOCKED" : "UNLOCKED"));
+        }
+    }
+    
+    static void displayAccount(int idx) {
+        System.out.println("\n─────────────────────────────────────");
+        System.out.println("Account Number: " + accountNumbers[idx]);
+        System.out.println("Holder Name   : " + accountHolders[idx]);
+        System.out.println("Balance       : $" + balances[idx]);
+        System.out.println("Status        : " + (isDeleted[idx] ? "CLOSED" : "ACTIVE"));
+        System.out.println("─────────────────────────────────────");
+    }
+    
+    static void securityControl() {
+        System.out.println("\n══════════════════════════════════════");
+        System.out.println("    ACCOUNT SECURITY CONTROL");
+        System.out.println("══════════════════════════════════════");
+        System.out.println("  1. View Locked Accounts");
+        System.out.println("  2. Unlock User Account");
+        System.out.println("  3. Reset User Password");
+        System.out.println("  4. Back");
+        System.out.print("\nChoice: ");
+        
+        String ch = sc.nextLine();
+        
+        if (ch.equals("1")) {
+            viewLockedAccounts();
+        } else if (ch.equals("2")) {
+            unlockAccount();
+        } else if (ch.equals("3")) {
+            resetPassword();
+        } else if (ch.equals("4")) {
+            return;
+        } else {
+            System.out.println("⚠ Invalid choice!");
+        }
+    }
+    
+    static void viewLockedAccounts() {
+        System.out.println("\n─────────────────────────────────────");
+        System.out.println("        LOCKED ACCOUNTS");
+        System.out.println("─────────────────────────────────────");
+        
+        boolean found = false;
+        for (int i = 0; i < accountCount; i++) {
+            if (isLocked[i] && !isDeleted[i]) {
+                System.out.println("Account: " + accountNumbers[i] + " | Holder: " + accountHolders[i]);
+                found = true;
+            }
+        }
+        
+        if (!found) {
+            System.out.println("No locked accounts found.");
+        }
+    }
+    
+    static void unlockAccount() {
+        System.out.print("\nEnter Account Number to Unlock: ");
+        String accNum = sc.nextLine();
+        
+        int idx = findAccount(accNum);
+        if (idx == -1) {
+            System.out.println("⚠ Account not found!");
+            return;
+        }
+        
+        if (!isLocked[idx]) {
+            System.out.println("⚠ Account is not locked!");
+            return;
+        }
+        
+        isLocked[idx] = false;
+        saveAccounts();
+        writeLog("Account unlocked by admin: " + accNum);
+        System.out.println("✓ Account unlocked successfully!");
+    }
+    
+    static void resetPassword() {
+        System.out.print("\nEnter Account Number: ");
+        String accNum = sc.nextLine();
+        
+        int idx = findAccount(accNum);
+        if (idx == -1) {
+            System.out.println("⚠ Account not found!");
+            return;
+        }
+        
+        System.out.print("Enter New Password: ");
+        String newPwd = sc.nextLine();
+        
+        if (newPwd.trim().isEmpty()) {
+            System.out.println("⚠ Password cannot be empty!");
+            return;
+        }
+        
+        passwords[idx] = newPwd;
+        saveAccounts();
+        writeLog("Password reset for account: " + accNum);
+        System.out.println("✓ Password reset successfully!");
+    }
+    
+    static void showReports() {
+        System.out.println("\n╔═══════════════════════════════════════════════╗");
+        System.out.println("║         BANK REPORTS & STATISTICS             ║");
+        System.out.println("╚═══════════════════════════════════════════════╝");
+        
+        int activeAccounts = 0;
+        double totalBalance = 0;
+        double highestBalance = 0;
+        double lowestBalance = Double.MAX_VALUE;
+        String highestAcc = "";
+        String lowestAcc = "";
+        
+        for (int i = 0; i < accountCount; i++) {
+            if (!isDeleted[i]) {
+                activeAccounts++;
+                totalBalance += balances[i];
+                
+                if (balances[i] > highestBalance) {
+                    highestBalance = balances[i];
+                    highestAcc = accountNumbers[i];
+                }
+                
+                if (balances[i] < lowestBalance) {
+                    lowestBalance = balances[i];
+                    lowestAcc = accountNumbers[i];
+                }
+            }
+        }
+        
+        System.out.println("\n┌─────────────────────────────────────────────┐");
+        System.out.println("  Total Accounts        : " + accountCount);
+        System.out.println("  Active Accounts       : " + activeAccounts);
+        System.out.println("  Closed Accounts       : " + (accountCount - activeAccounts));
+        System.out.println("  Total Bank Balance    : $" + totalBalance);
+        
+        if (activeAccounts > 0) {
+            System.out.println("  Average Balance       : $" + (totalBalance / activeAccounts));
+            System.out.println("  Highest Balance       : $" + highestBalance + " (" + highestAcc + ")");
+            System.out.println("  Lowest Balance        : $" + lowestBalance + " (" + lowestAcc + ")");
+        }
+        System.out.println("└─────────────────────────────────────────────┘");
+    }
+    
+    static void viewLogs() {
+        System.out.println("\n══════════════════════════════════════");
+        System.out.println("       SYSTEM LOGS");
+        System.out.println("══════════════════════════════════════");
+        System.out.println("  1. View All Logs");
+        System.out.println("  2. Clear Logs");
+        System.out.println("  3. Back");
+        System.out.print("\nChoice: ");
+        
+        String ch = sc.nextLine();
+        
+        if (ch.equals("1")) {
+            displayLogs();
+        } else if (ch.equals("2")) {
+            clearLogs();
+        } else if (ch.equals("3")) {
+            return;
+        } else {
+            System.out.println("⚠ Invalid choice!");
+        }
+    }
+    
+    static void displayLogs() {
+        try {
+            File f = new File("system_log.txt");
+            if (!f.exists()) {
+                System.out.println("\nNo logs found.");
+                return;
+            }
+            
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            String line;
+            System.out.println("\n────────────────────────────────────────────────");
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            System.out.println("────────────────────────────────────────────────");
+            br.close();
+        } catch (Exception e) {
+            System.out.println("⚠ Error reading logs!");
+        }
+    }
+    
+    static void clearLogs() {
+        try {
+            FileWriter fw = new FileWriter("system_log.txt", false);
+            fw.close();
+            System.out.println("✓ Logs cleared successfully!");
+        } catch (Exception e) {
+            System.out.println("⚠ Error clearing logs!");
+        }
+    }
+    
+    static void userLogin() {
+        System.out.println("\n══════════════════════════════════════");
+        System.out.println("        USER LOGIN PORTAL");
+        System.out.println("══════════════════════════════════════");
+        System.out.print("\nEnter Account Number: ");
+        String accNum = sc.nextLine();
+        
+        int idx = findAccount(accNum);
+        if (idx == -1) {
+            System.out.println("⚠ Account not found!");
+            writeLog("Failed login attempt - account not found: " + accNum);
+            return;
+        }
+        
+        if (isDeleted[idx]) {
+            System.out.println("⚠ This account has been closed!");
+            return;
+        }
+        
+        if (isLocked[idx]) {
+            System.out.println("⚠ This account is locked! Contact administrator.");
+            writeLog("Login attempt on locked account: " + accNum);
+            return;
+        }
+        
+        System.out.print("Enter Password: ");
+        String pwd = sc.nextLine();
+        
+        if (passwords[idx].equals(pwd)) {
+            writeLog("User logged in: " + accNum);
+            System.out.println("\n✓ Login Successful! Welcome, " + accountHolders[idx]);
+            userPanel(idx);
+        } else {
+            writeLog("Failed login attempt - wrong password: " + accNum);
+            System.out.println("⚠ Incorrect password!");
+        }
+                }
 
 
 
