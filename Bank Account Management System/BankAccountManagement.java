@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.io.*
 public class BankAccountManagement {
 
+
     //Global Variables can be accessed in any class method
     static final int MAX_ACCOUNTS = 100;
     static String[] accountNumbers = new String[MAX_ACCOUNTS];
@@ -19,6 +20,7 @@ public class BankAccountManagement {
         loadAccounts();
         mainMenu();
     }
+    
     // Main Menu
     static void mainMenu() {
         while (true) {
@@ -76,6 +78,9 @@ public class BankAccountManagement {
             System.out.println("\n✗ Incorrect password! Access denied.");
         }
     }
+    
     //=================================== Admin PANEL =================================//
+    
     static void adminPanel() {
+
 
