@@ -1,136 +1,122 @@
+import java.io.*;
 import java.util.Scanner;
 
+// ===================== GLOBAL VARIABLES =====================
 public class BankAccount {
+
+    // Maximum accounts
+    static final int MAX_ACCOUNTS = 100;
+
+    // Arrays for account data
+    static String[] accountNumbers = new String[MAX_ACCOUNTS];
+    static String[] accountHolders = new String[MAX_ACCOUNTS];
+    static double[] balances = new double[MAX_ACCOUNTS];
+    static String[] passwords = new String[MAX_ACCOUNTS];
+    static boolean[] isLocked = new boolean[MAX_ACCOUNTS];
+    static boolean[] isDeleted = new boolean[MAX_ACCOUNTS];
+    static int accountCount = 0;
+
+    // Admin password
+    static final String ADMIN_PASSWORD = "admin123";
+
+    // Scanner for input
     static Scanner sc = new Scanner(System.in);
 
-    static String[] names = new String[100];
-    static double[] balances = new double[100];
-    static int count = 0;
-
     public static void main(String[] args) {
-        mainMenu();
+        // Load existing accounts
+        loadAccounts();
+        // Show main menu
+        MainMenu.show();
     }
 
-    public static void mainMenu() {
-        while (true) {
-            System.out.println("\n╔════════════════════════╗");
-System.out.println("║        MAIN MENU       ║");
-System.out.println("╠════════════════════════╣");
-System.out.println("║ 1. User Menu           ║");
-System.out.println("║ 2. Admin Menu          ║");
-System.out.println("║ 3. Exit                ║");
-System.out.println("╚════════════════════════╝");
-System.out.print("Select an option → ");
-
-
-            int ch = sc.nextInt();
-
-            if (ch == 1) userMenu();
-            else if (ch == 2) adminMenu();
-            else if (ch == 3) break;
+    // ===================== MAIN MENU CLASS =====================
+    // Handles the initial menu for Admin / User / Help / About
+    public static class MainMenu {
+        public static void show() {
+            // TODO: Add menu display code here
         }
     }
 
-    public static void userMenu() {
-        while (true) {
-           System.out.println("\n╔══════════════════════════════════════╗");
-System.out.println("║            U S E R   M E N U         ║");
-System.out.println("╠══════════════════════════════════════╣");
-System.out.println("║  1 │ Check Balance                   ║");
-System.out.println("║  2 │ Deposit Money                   ║");
-System.out.println("║  3 │ Withdraw Money                  ║");
-System.out.println("║  4 │ View Details                    ║");
-System.out.println("║  5 │ Back                            ║");
-System.out.println("╚══════════════════════════════════════╝");
-System.out.print("Enter choice: ");
-
-            int ch = sc.nextInt();
-
-            if (ch == 1) checkBalance();
-            else if (ch == 2) depositMoney();
-            else if (ch == 3) withdrawMoney();
-            else if (ch == 4) viewDetails();
-            else if (ch == 5) break;
-        }
+    // ===================== ADMIN PANEL CLASS =====================
+    // Contains all admin related functionalities
+    public static class AdminPanel {
+        // TODO: Implement admin menu options
+        public static void show() {}
+        public static void accountManagement() {}
+        public static void searchAccounts() {}
+        public static void securityControl() {}
+        public static void showReports() {}
+        public static void viewLogs() {}
     }
 
-    public static void adminMenu() {
-        while (true) {
-       System.out.println("\n╔════════════════════════╗");
-       System.out.println("║       ADMIN MENU       ║");
-       System.out.println("╠════════════════════════╣");
-       System.out.println("║ 1. Create Account      ║");
-       System.out.println("║ 2. View All Accounts   ║");
-       System.out.println("║ 3. Delete Account      ║");
-       System.out.println("║ 4. Back                ║");
-       System.out.println("╚════════════════════════╝");
-       System.out.print("Select an option → ");
-
-            int ch = sc.nextInt();
-
-            if (ch == 1) createAccount();
-            else if (ch == 2) viewAccounts();
-            else if (ch == 3) deleteAccount();
-            else if (ch == 4) break;
-        }
+    // ===================== ACCOUNT MANAGEMENT CLASS =====================
+    // Handles creating, updating, closing, deleting, and viewing accounts
+    public static class AccountManagement {
+        // TODO: Student A commits
+        public static void createAccount() {}
+        public static void updateName() {}
+        public static void closeAccount() {}
+        public static void deleteAccount() {}
+        public static void viewAllAccounts() {}
     }
 
-    public static void createAccount() {
-        if (count >= names.length) {
-            System.out.println("Maximum accounts reached.");
-            return;
-        }
-        System.out.print("Enter Name: ");
-        sc.nextLine();
-        names[count] = sc.nextLine();
-        System.out.print("Enter Initial Balance: ");
-        balances[count] = sc.nextDouble();
-        count++;
-        System.out.println("Account Created Successfully");
+    // ===================== SECURITY CLASS =====================
+    // Handles locking, unlocking, resetting passwords
+    public static class Security {
+        // TODO: Student B commits
+        public static void viewLockedAccounts() {}
+        public static void unlockAccount() {}
+        public static void resetPassword() {}
     }
 
-    public static void viewAccounts() {
-        if (count == 0) {
-            System.out.println("No Accounts Found");
-            return;
-        }
-        for (int i = 0; i < count; i++) {
-            System.out.println((i + 1) + ". " + names[i] + " | Balance: " + balances[i]);
-        }
+    // ===================== TRANSACTION CLASS =====================
+    // Handles deposits, withdrawals, transfers, and transaction history
+    public static class Transaction {
+        // TODO: Student A commits
+        public static void deposit(int idx) {}
+        public static void withdraw(int idx) {}
+        public static void transfer(int idx) {}
+        public static void transactionMenu(int idx) {}
+        public static void transactionHistory(int idx) {}
+        public static void viewTxnHistory(int idx) {}
+        public static void clearTxnHistory(int idx) {}
+        public static void writeTxn(String accNum, String type, double amount, double newBalance) {}
     }
 
-    public static void deleteAccount() {
-        if (count == 0) {
-            System.out.println("No Accounts to Delete");
-            return;
-        }
-        System.out.print("Enter account index to delete: ");
-        int idx = sc.nextInt() - 1;
-        if (idx < 0 || idx >= count) {
-            System.out.println("Invalid index");
-            return;
-        }
-        for (int i = idx; i < count - 1; i++) {
-            names[i] = names[i + 1];
-            balances[i] = balances[i + 1];
-        }
-        count--;
-        System.out.println("Account Deleted Successfully");
+    // ===================== USER PANEL CLASS =====================
+    // Handles user-specific actions and menus
+    public static class UserPanel {
+        // TODO: Student B commits
+        public static void userLogin() {}
+        public static void userMenu(int idx) {}
+        public static void showAccountInfo(int idx) {}
+        public static void securitySettings(int idx) {}
+        public static void changePassword(int idx) {}
+        public static void viewLoginAttempts(int idx) {}
+        public static void userHelp() {}
     }
 
-    public static void checkBalance() {
-        System.out.println("Check Balance feature not implemented (Menu Demo)");
+    // ===================== HELP & ABOUT CLASS =====================
+    // Displays help and project information
+    public static class Info {
+        // TODO: Student A commits
+        public static void showHelp() {}
+        public static void showAbout() {}
     }
 
-    static void depositMoney() {
-        System.out.println("Deposit Money feature not implemented (Menu Demo)");
+    // ===================== FILE HANDLING CLASS =====================
+    // Handles loading and saving accounts, logs, etc.
+    public static class FileHandler {
+        // TODO: Student B commits
+        public static void loadAccounts() {}
+        public static void saveAccounts() {}
+        public static void writeLog(String message) {}
     }
 
-    public static void withdrawMoney() {
-        System.out.println("Withdraw Money feature not implemented (Menu Demo)");
-    }
-
-    public static void viewDetails() {
-        System.out.println("View Details feature not implemented (Menu Demo)");
+    // ===================== HELPER METHODS =====================
+    // Utility methods like finding accounts
+    public static int findAccount(String accNum) {
+        // TODO: Implement findAccount
+        return -1;
     }
 }
