@@ -1,9 +1,9 @@
-# ATM SIMULATION WITH MULTIPLE USERS - FILE HANDLING & EXCEPTION HANDLING
-# A beginner-friendly Python project for university assignment
+
+
 
 import os
 
-# Global variables
+
 balance = 0
 current_user = ""
 
@@ -17,18 +17,18 @@ def create_user(username, pin):
     """Create a new user with folder and files"""
     
     try:
-        # Create folder for new user
+        
         os.mkdir(username)
         
-        # Create pin.txt with user's PIN
+       
         with open(f"{username}/pin.txt", "w") as file:
             file.write(pin)
         
-        # Create balance.txt with default balance
+       
         with open(f"{username}/balance.txt", "w") as file:
             file.write("1000")
         
-        # Create empty history.txt
+      
         with open(f"{username}/history.txt", "w") as file:
             file.write("")
         
@@ -47,35 +47,35 @@ def register():
     print("\n--- NEW USER REGISTRATION ---")
     
     try:
-        # Get username
+        
         username = input("Enter a username (no spaces): ").strip()
         
-        # Validate username
+       
         if username == "" or " " in username:
             print("✗ Invalid username. No spaces allowed and cannot be empty.")
             return None
         
-        # Check if user already exists
+      
         if user_exists(username):
             print(f"✗ Username '{username}' already exists. Please login instead.")
             return None
         
-        # Get PIN
+       
         pin = input("Create a 4-digit PIN: ").strip()
         
-        # Validate PIN
+        
         if len(pin) != 4 or not pin.isdigit():
             print("✗ PIN must be exactly 4 digits.")
             return None
         
-        # Confirm PIN
+       
         pin_confirm = input("Confirm your PIN: ").strip()
         
         if pin != pin_confirm:
             print("✗ PINs do not match. Registration failed.")
             return None
         
-        # Create the user
+        
         if create_user(username, pin):
             return username
         else:
@@ -92,20 +92,20 @@ def login():
     print("\n--- USER LOGIN ---")
     
     try:
-        # Get username
+        
         username = input("Enter your username: ").strip()
         
-        # Check if user exists
+       
         if not user_exists(username):
             print(f"✗ Username '{username}' not found.")
             print("  Please register first (Option 1 from main screen).")
             return None
         
-        # Read the correct PIN from user's file
+        
         with open(f"{username}/pin.txt", "r") as file:
             correct_pin = file.read().strip()
         
-        # Give user 3 attempts
+       
         attempts = 3
         
         while attempts > 0:
@@ -183,11 +183,11 @@ def deposit():
             print("✗ Invalid amount. Please enter a positive number.")
             return
         
-        # Update balance
+        
         balance += amount
         save_balance()
         
-        # Add to history
+       
         transaction = f"Deposited ${amount:.2f}"
         add_to_history(transaction)
         
@@ -213,16 +213,16 @@ def withdraw():
             print("✗ Invalid amount. Please enter a positive number.")
             return
         
-        # Check if sufficient balance
+       
         if amount > balance:
             print(f"✗ Insufficient funds. Your balance is ${balance:.2f}")
             return
         
-        # Update balance
+        
         balance -= amount
         save_balance()
         
-        # Add to history
+        
         transaction = f"Withdrew ${amount:.2f}"
         add_to_history(transaction)
         
@@ -241,32 +241,32 @@ def change_pin():
     print("\n--- CHANGE PIN ---")
     
     try:
-        # Read the old PIN from file
+        
         with open(f"{current_user}/pin.txt", "r") as file:
             old_pin = file.read().strip()
         
-        # Ask user to verify old PIN
+        
         entered_old = input("Enter your current PIN: ").strip()
         
         if entered_old != old_pin:
             print("✗ Incorrect current PIN.")
             return
         
-        # Enter new PIN
+       
         new_pin = input("Enter new 4-digit PIN: ").strip()
         
         if len(new_pin) != 4 or not new_pin.isdigit():
             print("✗ New PIN must be exactly 4 digits.")
             return
         
-        # Confirm PIN
+       
         confirm_pin = input("Confirm new PIN: ").strip()
         
         if new_pin != confirm_pin:
             print("✗ PINs do not match.")
             return
         
-        # Save new PIN
+        
         with open(f"{current_user}/pin.txt", "w") as file:
             file.write(new_pin)
         
@@ -284,7 +284,7 @@ def delete_user():
     print("Warning: This action cannot be undone!")
     
     try:
-        # Verify user's PIN
+       
         with open(f"{current_user}/pin.txt", "r") as file:
             correct_pin = file.read().strip()
         
@@ -294,19 +294,18 @@ def delete_user():
             print("✗ Incorrect PIN. Account not deleted.")
             return
         
-        # Confirm delete
+       
         confirm = input("Are you sure you want to delete your account? (yes/no): ").lower()
         
         if confirm != "yes":
             print("Account deletion cancelled.")
             return
         
-        # Delete entire folder
         shutil.rmtree(current_user)
         
         print(f"✓ Account '{current_user}' deleted permanently.")
         
-        # After deletion, logout user
+        
         exit()  
     
     except Exception as e:
@@ -372,22 +371,22 @@ def main_menu():
                 delete_user()
 
             elif choice == "7":
-                # Exit and show session summary
+                
                 print("\n" + "="*40)
                 print("SESSION SUMMARY")
                 print("="*40)
                 
-                # Save final balance
+               
                 save_balance()
                 
-                # Add session end to history
+                
                 add_to_history("--- Session Ended ---")
                 
-                # Display final balance
+                
                 print(f"User: {current_user}")
                 print(f"Final Balance: ${balance:.2f}")
                 
-                # Display full history
+               
                 print("\nYour Transaction History:")
                 show_history()
                 
@@ -421,7 +420,7 @@ def main():
             choice = input("Enter your choice (1-3): ")
             
             if choice == "1":
-                # Register new user
+               
                 username = register()
                 if username:
                     current_user = username
@@ -430,7 +429,7 @@ def main():
                     break
             
             elif choice == "2":
-                # Login existing user
+                
                 username = login()
                 if username:
                     current_user = username
@@ -449,6 +448,6 @@ def main():
             print(f"Error: {e}")
             print("Please try again.")
 
-# Run the program
+
 if __name__ == "__main__":
     main()
