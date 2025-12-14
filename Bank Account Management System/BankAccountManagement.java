@@ -1039,7 +1039,7 @@ static void showAbout() {
     System.out.println("  Language: Java");
     System.out.println("  Storage: Text file based");
     System.out.println("  Interface: Console-based");
-    System.out.println("\n  DEVELOPED BY");
+    System.out.println("\n  DEVELOPED BY:\n Muhammad Mehroz Saeed(033)\nMuhammad Faheem Zaman");
     System.out.println("  ────────────");
     System.out.println("  Computer Science Students");
     System.out.println("  First Semester Project");
@@ -1126,6 +1126,7 @@ static void writeTxn(String accNum, String type, double amount, double newBalanc
     }
 }
     }
+
 
 
 
